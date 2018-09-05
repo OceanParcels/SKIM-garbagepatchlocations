@@ -1,0 +1,2 @@
+EKE_PacificAtlantic.py : Creating figure 5 with the EKE of the North Pacific and North Atlantic
+MeridionalZonalAveragePacificAtlantic.py : Creating figure 4 showing the zonal and meridional means of the modeled and observation microplastic concentrations
