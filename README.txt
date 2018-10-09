@@ -5,4 +5,4 @@ Global: Contains code used to carry out the global Lagrangian simulations and an
 North Atlantic: Contains code used to carry out the North Atlantic Lagrangian simulations and analyse the results.
 North Pacific: Contains code used to carry out the North Pacific Lagrangian simulations and analyse the results.
 
-For any questions, please contact Victor Onink at v.onink@uu.nl.
+For any questions, please contact Victor Onink at onink@climate.unibe.ch.
