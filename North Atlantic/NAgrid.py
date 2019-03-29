@@ -114,7 +114,7 @@ def GenerateP(landfilename, lonmin, lonmax, latmin, latmax, spacing, name):
 landfilename = "D:\Desktop\Thesis\Data sets\GlobCurrent/2005/AllTogether/20050101000000-GLOBCURRENT-L4-CUReul_hs-ALT_SUM-v02.0-fv01.0.nc"
 lonmin, lonmax = -100., 30.
 latmin, latmax = 0., 75.
-spacing = 0.5
+spacing = 10
 name = 'GeoTestgrid0_5'
 GenerateP(landfilename, lonmin, lonmax, latmin, latmax, spacing, name)
 

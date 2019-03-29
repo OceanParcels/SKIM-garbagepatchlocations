@@ -3,8 +3,8 @@
 Created on Wed Aug 15 13:35:23 2018
 
 @author: Victor Onink
-Here we create a figure that has the 24h, and the 3h flow field densities
-for the North Pacific
+Here we create a figure that has the 24h and the 3h densities
+for the North Atlantic
 """
 
 import numpy as np
@@ -60,11 +60,25 @@ def HistogramFunction(londata,latdata):
     density[density==0]=np.nan
     return density
 
+#%%
+location='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al/Densities/'
+File=['AtlanticNoBeach','AtlanticBeach']
+densityNB=np.load(location+File[0])
+densityNB[np.isnan(densityNB)]=0
+meanFinalYearNB=np.sum(densityNB[-183:,:,:]/densityNB[-183:,:,:].shape[0],axis=0)
+meanFinalYearNB[meanFinalYearNB==0]=np.nan
+densityB=np.load(location+File[1])
+densityB[np.isnan(densityB)]=0
+meanFinalYearB=np.sum(densityB[-183:,:,:]/densityB[-183:,:,:].shape[0],axis=0)
+meanFinalYearB[meanFinalYearB==0]=np.nan
+ratio=[1,np.nanmean(meanFinalYearB)/np.nanmean(meanFinalYearNB)]
+
+#%% Subplot Comparing the two integration timesteps
 def plotDensity(typ,lon,lat,dens):
     Lat,Lon=np.meshgrid(lat,lon)
 #    Lon,Lat=np.meshgrid(lon,lat)
-    latmin,latmax=0,75
-    lonmin,lonmax=95,285
+    latmin,latmax=-5,75
+    lonmin,lonmax=-100,20
     my_map = Basemap(projection='cyl', llcrnrlon=lonmin, 
                       urcrnrlon=lonmax,llcrnrlat=latmin,urcrnrlat=latmax, 
                       resolution='l')
@@ -72,45 +86,42 @@ def plotDensity(typ,lon,lat,dens):
     my_map.fillcontinents(color = 'gray')
     my_map.drawmapboundary()
     my_map.drawmeridians(np.arange(0, 360, 30),labels=[0,0,0,1],fontsize=12)
-    if (typ+1)%2==1:
-        my_map.drawparallels(np.arange(-90, 91, 30),labels=[1,0,0,0],fontsize=12)
-    else:
-        my_map.drawparallels(np.arange(-90, 91, 30),fontsize=12)
-    density=my_map.contourf(Lon,Lat,dens/1e-8,np.linspace(1e-1,2e0,20),
-                              #norm=colors.LogNorm(1e-10,1e-9),
-                              cmap='rainbow',extend='both')
-#    my_map.contour(LonSam,LatSam,sample,[1e4,1e5],colors='k',zorder=100)
-#    my_map.contour(LonP,LatP,CountPvS,[5e4],colors='k',zorder=100)
-    title=['(a) Total Currents ($\Delta$t=24h)','(b) Total Currents + Stokes Drift ($\Delta$t=24h)',
-           '(c) Total Currents ($\Delta$t=3h)','(d) Total Currents + Stokes Drift ($\Delta$t=3h)']
+    my_map.drawparallels(np.arange(-90, 90, 30),labels=[1,0,0,0],fontsize=12)
+    density=my_map.contourf(Lon,Lat,
+                            dens/1e-9,
+#                            dens,
+                            np.linspace(1e-1,4e0,40),
+#                            np.linspace(-0.1,0.2),
+                            cmap='rainbow',extend='both')
+    title=['(a) With Anti-Beaching','(b) Without Anti-Beaching']
     plt.title(title[typ],fontsize=14,fontweight='bold')
     return density
 #    cbar=my_map.colorbar(density)
 #    cbar.ax.tick_params(labelsize=12)
 #    cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=12)
-
-#%%                                    
-location='D:\Desktop\Thesis\ParcelsFigData\Data\North Pacific\OutputFiles\Onink et al\Densities/'
-File=['NorthPacificTotalDensity24h','NorthPacificStokesTotalDensity24h',
-      'NorthPacificTotalDensity3h','NorthPacificStokesTotalDensity3h']
-axeslabelsize=14
-textsize=12
-fig,axes=plt.subplots(nrows=2, ncols=1,figsize=(10*2,8*1))
+                                    
+location='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al/Densities/'
+File=['AtlanticNoBeach','AtlanticBeachCorrec']#AtlanticBeachCorrec
+cbar_lab=["Plastic Counts ($10^{-3}$ # km$^{-2}$)","Corrected Plastic Counts ($10^{-3}$ # km$^{-2}$)"]
+fig,axes=plt.subplots(nrows=2, ncols=1,figsize=(8*1.5,8*1.5))
 for i in range(len(File)):
     density=np.load(location+File[i])
     density[np.isnan(density)]=0
     meanFinalYear=np.sum(density[-183:,:,:]/density[-183:,:,:].shape[0],axis=0)
     meanFinalYear[meanFinalYear==0]=np.nan
+#    meanFinalYear-=np.nanmean(meanFinalYear)
+#    meanFinalYear/=np.nanstd(meanFinalYear)
     latD=np.linspace(-80,80,160)
-    lonD=np.linspace(0,359,360)
-    plt.subplot(2,2,i+1)
+    lonD=np.linspace(-180,180,360)
+    plt.subplot(2,1,i+1)
     density=plotDensity(i,lonD,latD,meanFinalYear)
-fig.subplots_adjust(right=0.9)
-cbar_ax = fig.add_axes([0.93, 0.12, 0.02, 0.74])
-cbar=fig.colorbar(density,cax=cbar_ax)
-cbar.ax.tick_params(labelsize=textsize)
-cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=axeslabelsize)
-cbar.ax.set_yticklabels(['<0.1','0.3','0.5','0.7','0.9','1.1','1.3','1.5','1.7','1.9<'])
-plt.subplots_adjust(wspace=0.06)
-plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\North Pacific\Figures\NorthPacificTimeStepDensities.jpg',
-            bbox_inches='tight') 
+    cbar=fig.colorbar(density)
+    cbar.ax.tick_params(labelsize=12)
+    cbar.set_label(cbar_lab[i], rotation=90,fontsize=14)
+#fig.subplots_adjust(right=0.9)
+#cbar_ax = fig.add_axes([0.85, 0.06, 0.02, 0.86])
+#cbar=fig.colorbar(density,cax=cbar_ax)
+#cbar.ax.tick_params(labelsize=12)
+#cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=14)
+plt.tight_layout(pad=5)
+plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\Figures\NorthAtlanticBeachingEffectCorrection.jpg')

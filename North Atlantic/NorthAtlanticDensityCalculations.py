@@ -113,3 +113,38 @@ for i in range(len(File)):
         density[j,:,:]=HistogramFunction(lonLast[:,j],latLast[:,j])
     density.dump(location+saveFiles[i])
     Time.dump(location+saveFiles[i]+'Time')
+#%%
+File=['D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles/Onink et al/AtlanticTotal3h_dt15m.nc',
+      'D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles/Onink et al/AtlanticTotal3h_dt30m.nc',
+      'D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al\AtlanticTotal24hBeach.nc',
+      'D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al\AtlanticTotal24h.nc']
+saveFiles=['AtlanticIntegration_30m','AtlanticIntegration_15m','AtlanticBeach','AtlanticNoBeach']
+location='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles/Onink et al/Densities/'
+for i in [2,3]:#range(len(File)):
+    print File[i]
+    dataset=Dataset(File[i])
+    lat=dataset.variables['lat'][:]
+    lon=dataset.variables['lon'][:]
+    time=dataset.variables['time'][:]
+    lon[lon>180]-=360
+    #Remove all the beach particles, which requires them to be stuck for 10 steps, so 20 days
+    for k in range(lon.shape[0]):
+        if lon[k,-1]==lon[k,-10]:
+            if lat[k,-1]==lat[k,-10]:
+                lat[k,:]=np.nan
+                lon[k,:]=np.nan
+    #Now, we want the last 5 years of particle positions, since in this time
+    #the garbage patch has largely been formed
+    if lon.shape[1]==4748:
+        lonLast=lon[:,-365*2:]
+        latLast=lat[:,-365*2:]
+        Time=time[:,-365*2:]
+    else:
+        lonLast=lon[:,-185:]
+        latLast=lat[:,-185:]
+        Time=time[:,-185:]
+    density=np.zeros((lonLast.shape[1],360,160))
+    for j in range(lonLast.shape[1]):
+        density[j,:,:]=HistogramFunction(lonLast[:,j],latLast[:,j])
+    density.dump(location+saveFiles[i])
+#    Time.dump(location+saveFiles[i]+'Time')

@@ -52,7 +52,7 @@ saveFiles=['GlobalTotalDensity','GlobalEkmanDensity','GlobalGeostrophicDensity',
            'GlobalStokesTotalDensity',
            'GlobalStokesDensity']
 location='D:\Desktop\Thesis\ParcelsFigData\Data\Global\OutputFiles\Onink et al/Densities/'
-for i in range(len(File)):
+for i in [2]:#range(len(File)):
     print File[i]
     dataset=Dataset(File[i])
     lat=dataset.variables['lat'][:]

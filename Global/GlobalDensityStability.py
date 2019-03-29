@@ -42,55 +42,6 @@ def draw_screen_poly( lats, lons, m,color):
     xy = zip(x,y)
     poly = Polygon( xy, edgecolor=color, linewidth=1.5,facecolor='none' )
     plt.gca().add_patch(poly)
-#%% Subplots!!!!!
-latD=np.linspace(-80,80,160)
-lonD=np.linspace(-180,180,360)
-def plotDensity(typ,lon,lat,dens):
-    Lat,Lon=np.meshgrid(lat,lon)
-    latmin,latmax=-90,90
-    lonmin,lonmax=-180,180
-    my_map = Basemap(projection='cyl', llcrnrlon=lonmin, 
-                      urcrnrlon=lonmax,llcrnrlat=latmin,urcrnrlat=latmax, 
-                      resolution='l')
-#    my_map.drawcoastlines()
-    my_map.fillcontinents(color = 'gray')
-    my_map.drawmapboundary()
-    my_map.drawmeridians(np.arange(0, 360, 30),labels=[0,0,0,1],fontsize=11)
-    if (typ+1)%2==1:
-        my_map.drawparallels(np.arange(-90, 91, 30),labels=[1,0,0,0],fontsize=11)
-    else:
-        my_map.drawparallels(np.arange(-90, 91, 30),fontsize=11)
-    density=my_map.contourf(Lon,Lat,dens/1e-9,np.linspace(1e-1,2e0,20),
-                              #norm=colors.LogNorm(1e-10,1e-9),
-                              cmap='rainbow',extend='both')
-    my_map.contour(Lon,Lat,dens/1e-9,[2e0])
-    title=['(a) Total Currents','(b) Ekman Currents','(c) Geostrophic Currents','(d) Stokes Drift']
-    plt.title(title[typ],fontsize=14,fontweight='bold')    
-    return density
-#    cbar=my_map.colorbar(density)
-#    cbar.ax.tick_params(labelsize=12)
-#    cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=12)
-location='D:\Desktop\Thesis\ParcelsFigData\Data\Global\OutputFiles\Onink et al/Densities/'
-File=['GlobalTotalDensity','GlobalEkmanDensity',
-      'GlobalGeostrophicDensity','GlobalStokesDensity']
-fig,axes=plt.subplots(nrows=2, ncols=2,figsize=(10*2,8*1.5))
-for i in range(len(File)):
-    density=np.load(location+File[i])
-    density[np.isnan(density)]=0
-    meanFinalYear=np.sum(density[-183:,:,:]/density[-183:,:,:].shape[0],axis=0)#np.mean(density[-365:,:,:],axis=0)
-    meanFinalYear[meanFinalYear==0]=np.nan
-    plt.subplot(2,2,i+1)
-    density=plotDensity(i,lonD,latD,meanFinalYear)
-fig.subplots_adjust(right=0.90)
-cbar_ax = fig.add_axes([0.93, 0.133, 0.02, 0.72])
-cbar=fig.colorbar(density,cax=cbar_ax)
-cbar.ax.tick_params(labelsize=12)
-cbar.ax.set_yticklabels(['<0.1','0.3','0.5','0.7','0.9','1.1','1.3','1.5','1.7','1.9<'])
-cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=13)
-plt.subplots_adjust(wspace=0.1)
-
-#plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\Global\Figures\GlobalSubplotsDensityStokes.jpg',
-#            bbox_inches='tight')
 
 #%% With boxes showing the garbage patch and extended garbage patch region
 latD=np.linspace(-80,80,160)
@@ -110,9 +61,6 @@ def plotDensity(typ,lon,lat,dens):
     my_map = Basemap(projection='cyl', llcrnrlon=lonmin, 
                       urcrnrlon=lonmax,llcrnrlat=latmin,urcrnrlat=latmax, 
                       resolution='l')
-    if typ==0:
-        for N in range(len(lonPatch)):
-            draw_screen_poly(latPatch[N],lonPatch[N],my_map,color[N])
     my_map.fillcontinents(color = 'gray')
     my_map.drawmapboundary()
     my_map.drawmeridians(np.arange(0, 360, 30),labels=[0,0,0,1],fontsize=11)
@@ -123,20 +71,21 @@ def plotDensity(typ,lon,lat,dens):
     density=my_map.contourf(Lon,Lat,dens/1e-9,np.linspace(1e-1,2e0,20),
                               #norm=colors.LogNorm(1e-10,1e-9),
                               cmap='rainbow',extend='both')
-    title=['(a) Total Currents','(b) Ekman Currents','(c) Geostrophic Currents','(d) Stokes Drift']
+    title=['(a) Average Year 9','(b) Average Year 10','(c) Average Year 11','(d) Average Year 12']
     plt.title(title[typ],fontsize=14,fontweight='bold')    
     return density
 #    cbar=my_map.colorbar(density)
 #    cbar.ax.tick_params(labelsize=12)
 #    cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=12)
 location='D:\Desktop\Thesis\ParcelsFigData\Data\Global\OutputFiles\Onink et al/Densities/'
-File=['GlobalTotalDensity','GlobalEkmanDensity',
-      'GlobalGeostrophicDensity','GlobalStokesDensity']
+File=['GlobalGeostrophicDensity','GlobalGeostrophicDensity',
+      'GlobalGeostrophicDensity','GlobalGeostrophicDensity']
 fig,axes=plt.subplots(nrows=2, ncols=2,figsize=(10*2,8*1.5))
 for i in range(len(File)):
     density=np.load(location+File[i])
     density[np.isnan(density)]=0
-    meanFinalYear=np.sum(density[-183:,:,:]/density[-183:,:,:].shape[0],axis=0)#np.mean(density[-365:,:,:],axis=0)
+    meanFinalYear=np.sum(density[183*(i+1):183*(i+2),:,:]/
+                                 density[183*(i+1):183*(i+2),:,:].shape[0],axis=0)
     meanFinalYear[meanFinalYear==0]=np.nan
     plt.subplot(2,2,i+1)
     density=plotDensity(i,lonD,latD,meanFinalYear)
@@ -148,5 +97,5 @@ cbar.ax.set_yticklabels(['<0.1','0.3','0.5','0.7','0.9','1.1','1.3','1.5','1.7',
 cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=13)
 plt.subplots_adjust(wspace=0.1)
 
-#plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\Global\Figures\GlobalSubplotsDensityStokesPatch.jpg',
-#            bbox_inches='tight')
+plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\Global\Figures\GlobalGeostrophicStability.jpg',
+            bbox_inches='tight')

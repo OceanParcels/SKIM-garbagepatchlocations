@@ -90,8 +90,8 @@ magS=np.sqrt(np.square(uS)+np.square(vS))
 #%% Now we plot everything
 def plotDensity(typ,lon,lat,u,v,mag):
     Lon,Lat=np.meshgrid(lon,lat)
-    latmin,latmax=-90,90
-    lonmin,lonmax=-180,180
+    latmin,latmax=-0,90
+    lonmin,lonmax=-100,30
     my_map = Basemap(projection='cyl', llcrnrlon=lonmin, 
                       urcrnrlon=lonmax,llcrnrlat=latmin,urcrnrlat=latmax, 
                       resolution='l')
@@ -142,5 +142,7 @@ for i in range(20):
 cbar.ax.set_yticklabels(actualLabels)
 cbar.set_label("Mean Current Velocity (m s$^{-1}$)", rotation=90,fontsize=13)
 plt.subplots_adjust(wspace=0.1)
-plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\Global\Figures\MeanGlobalCurrents.jpg',
+#plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\Global\Figures\MeanGlobalCurrents.jpg',
+#            bbox_inches='tight')
+plt.savefig('D:\Desktop\Bern Projects\Presentations/MICRO2018/MeanAtlanticCurrents.jpg',
             bbox_inches='tight')

@@ -38,7 +38,7 @@ def AreaWeighAverage(dataset,coarseness):
     return finalDataset 
 #%%
 
-File='D:\Desktop\Thesis\ParcelsFigData\Data\North Pacific\OutputFiles\Onink et al\NorthPacificStokeTotal3h.nc'
+File='D:\Desktop\Thesis\ParcelsFigData\Data\North Pacific\OutputFiles\Onink et al\NorthPacificGeostrophic.nc'
 dataset=Dataset(File)
 #trajectory=dataset.variables['trajectory'][:]
 timeM=dataset.variables['time'][:]
@@ -51,7 +51,7 @@ lon[lon<0]+=360
 #plotTrajectoriesFile(File,mode='2d')
 
 #%%
-plt.figure(figsize=(10*1.5,8*1.5))
+plt.figure(figsize=(10*0.92,8*0.92))
 latmin,latmax=-5,75
 lonmin,lonmax=95,285
 my_map = Basemap(projection='cyl', llcrnrlon=lonmin, 
@@ -60,20 +60,24 @@ my_map = Basemap(projection='cyl', llcrnrlon=lonmin,
 #my_map.drawcoastlines()
 my_map.fillcontinents(color = 'gray')
 my_map.drawmapboundary()
-plt.tight_layout()
+
 #my_map.drawmeridians(np.arange(0, 360, 30))
 #my_map.drawparallels(np.arange(-90, 90, 30))
 plt.title('Geostrophic Currents')
 #text=plt.annotate('hi', xy=(0.5, 0.9), xycoords='axes fraction')
-text=plt.text(96.8, 72.1,'',
+#text=plt.text(96.8, 72.1,'',
+#                     ha='center',va='center',fontsize=12,
+#                     bbox={'facecolor':'white', 'alpha':1,'pad':10},zorder=200,
+#                     horizontalalignment='left')
+text=plt.text(98, 70.8,'',
                      ha='center',va='center',fontsize=12,
                      bbox={'facecolor':'white', 'alpha':1,'pad':10},zorder=200,
                      horizontalalignment='left')
-
+plt.tight_layout()
 #x,y=my_map(0.5,0.5)
 #text=plt.text(x,y,'hi')
 x,y = my_map(0, 0)
-point = my_map.plot(x, y, 'r.', markersize=3)[0]
+point = my_map.plot(x, y, 'r.', markersize=2)[0]
 def init():
     point.set_data([], [])
     text.set_text('')
@@ -93,7 +97,7 @@ length=timeM.shape[1]
 # call the animator.  blit=True means only re-draw the parts that have changed.
 anim = animation.FuncAnimation(plt.gcf(), animate, init_func=init,
                                frames=length, interval=20, blit=True)
-#anim.save('D:\Desktop\Thesis\ParcelsFigData\Data\North Pacific\Animations/GeostrophicNorthPacific.mp4', 
-#          fps=40, extra_args=['-vcodec', 'libx264'])
+anim.save('D:\Desktop\Thesis\ParcelsFigData\Data\North Pacific\Animations/GeostrophicNorthPacific_small.mp4', 
+          fps=40, extra_args=['-vcodec', 'libx264'])
 plt.show()
 

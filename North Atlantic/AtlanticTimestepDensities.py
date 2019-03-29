@@ -81,8 +81,8 @@ def plotDensity(typ,lon,lat,dens):
                               cmap='rainbow',extend='both')
 #    my_map.contour(LonSam,LatSam,sample,[1e4,1e5],colors='k',zorder=100)
 #    my_map.contour(LonP,LatP,CountPvS,[5e4],colors='k',zorder=100)
-    title=['(a) Total Currents (dt=24h)','(b) Total Currents + Stokes Drift (dt=24h)',
-           '(c) Total Currents (dt=3h)','(d) Total Currents + Stokes Drift (dt=3h)']
+    title=['(a) Total Currents ($\Delta$t=24h)','(b) Total Currents + Stokes Drift ($\Delta$t=24h)',
+           '(c) Total Currents ($\Delta$t=3h)','(d) Total Currents + Stokes Drift ($\Delta$t=3h)']
     plt.title(title[typ],fontsize=14,fontweight='bold')
     return density
 #    cbar=my_map.colorbar(density)
@@ -114,3 +114,49 @@ cbar.ax.set_yticklabels(['<0.1','0.5','0.9','1.3','1.7','2.1','2.5','2.9','3.3',
 plt.subplots_adjust(wspace=0.1)
 plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\Figures\NorthAtlanticTimeStepDensities.jpg',
             bbox_inches='tight') 
+
+#%% Subplot Comparing the two integration timesteps
+def plotDensity(typ,lon,lat,dens):
+    Lat,Lon=np.meshgrid(lat,lon)
+#    Lon,Lat=np.meshgrid(lon,lat)
+    latmin,latmax=-5,75
+    lonmin,lonmax=-100,20
+    my_map = Basemap(projection='cyl', llcrnrlon=lonmin, 
+                      urcrnrlon=lonmax,llcrnrlat=latmin,urcrnrlat=latmax, 
+                      resolution='l')
+#    my_map.drawcoastlines()
+    my_map.fillcontinents(color = 'gray')
+    my_map.drawmapboundary()
+    my_map.drawmeridians(np.arange(0, 360, 30),labels=[0,0,0,1],fontsize=22)
+    my_map.drawparallels(np.arange(-90, 90, 30),labels=[1,0,0,0],fontsize=22)
+    density=my_map.contourf(Lon,Lat,dens/1e-9,np.linspace(1e-1,4e0,40),
+                              #norm=colors.LogNorm(1e-10,1e-9),
+                              cmap='rainbow',extend='both')
+#    my_map.contour(LonSam,LatSam,sample,[1e4,1e5],colors='k',zorder=100)
+#    my_map.contour(LonP,LatP,CountPvS,[5e4],colors='k',zorder=100)
+    title=['Integration dt=30 min','Integration dt=15 min']
+    plt.title(title[typ],fontsize=24,fontweight='bold')
+    return density
+#    cbar=my_map.colorbar(density)
+#    cbar.ax.tick_params(labelsize=12)
+#    cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=12)
+                                    
+location='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al/Densities/'
+File=['AtlanticIntegration_30m','AtlanticIntegration_15m']
+fig,axes=plt.subplots(nrows=2, ncols=1,figsize=(8*1.5,8*1.5))
+for i in range(len(File)):
+    density=np.load(location+File[i])
+    density[np.isnan(density)]=0
+    meanFinalYear=np.sum(density[-183:,:,:]/density[-183:,:,:].shape[0],axis=0)
+    meanFinalYear[meanFinalYear==0]=np.nan
+    latD=np.linspace(-80,80,160)
+    lonD=np.linspace(-180,180,360)
+    plt.subplot(2,1,i+1)
+    density=plotDensity(i,lonD,latD,meanFinalYear)
+fig.subplots_adjust(right=0.9)
+cbar_ax = fig.add_axes([0.85, 0.06, 0.02, 0.86])
+cbar=fig.colorbar(density,cax=cbar_ax)
+cbar.ax.tick_params(labelsize=22)
+cbar.set_label("Plastic Counts ($10^{-3}$ # km$^{-2}$)", rotation=90,fontsize=24)
+plt.tight_layout(pad=5)
+plt.savefig('D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\Figures\NorthAtlanticIntegrationTimeStep.jpg')

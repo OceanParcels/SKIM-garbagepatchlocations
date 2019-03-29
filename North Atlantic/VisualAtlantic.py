@@ -51,8 +51,8 @@ def AreaWeighAverage(dataset,coarseness):
 #File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\AtlanticStokeTotalRunNoBeach05x05.nc'
 #File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\AtlanticStokeTotalRunNoBeach05x05.nc'
 #File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\AtlanticRun05x05.nc'
-#File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al\NorthAtlanticStokeRunNoBeach1x1.nc'
-File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al\AtlanticWindage0.05.nc'
+#File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al\NorthAtlanticStoke.nc'
+File='D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\OutputFiles\Onink et al\AtlanticTotal24hBeach.nc'
 
 dataset=Dataset(File)
 trajectory=dataset.variables['trajectory'][:]
@@ -104,7 +104,7 @@ my_map.fillcontinents(color = 'gray')
 my_map.drawmapboundary()
 #my_map.drawmeridians(np.arange(0, 360, 30))
 #my_map.drawparallels(np.arange(-90, 90, 30))
-plt.title('Stokes Drift', fontsize=14,weight='bold')
+plt.title('Windage 1%', fontsize=14,weight='bold')
 plt.tight_layout()
 #text=plt.annotate('hi', xy=(0.5, 0.9), xycoords='axes fraction')
 text=plt.text(-98.75, -3.1,'',
@@ -134,7 +134,7 @@ def animate(i):
 # call the animator.  blit=True means only re-draw the parts that have changed.
 anim = animation.FuncAnimation(plt.gcf(), animate, init_func=init,
                                frames=lon.shape[1], interval=60, blit=True)
-#anim.save('D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\Animations/StokesNorthAtlantic.mp4', 
+#anim.save('D:\Desktop\Thesis\ParcelsFigData\Data\North Atlantic\Animations/Windage1percentNorthAtlantic.mov', 
 #          fps=40, extra_args=['-vcodec', 'libx264'])
 #anim.save('D:\Desktop\Thesis\Azores Cruise\TestSimulation.mp4', 
 #          fps=50, extra_args=['-vcodec', 'libx264'])
